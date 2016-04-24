@@ -1,0 +1,30 @@
+build:
+  test:
+    image: golang:1.5
+    environment:
+      - CGO_ENABLED=0
+      - GO15VENDOREXPERIMENT=1
+    commands:
+      - go vet
+      - go test
+      - go build -ldflags "-s -w -X main.version=$DRONE_BUILD_NUMBER"
+    when:
+      event: push
+
+publish:
+  docker:
+    username: $$DOCKER_USER
+    password: $$DOCKER_PASS
+    email: $$DOCKER_EMAIL
+    repo: plugins/my-plugin
+    tag: latest
+
+plugin:
+  name: My Plugin
+  desc: Description of My Plugin
+  type: publish|deploy|notify|clone|cache
+  image: plugins/my-plugin
+  labels:
+    - label1
+    - label2
+    - label3
