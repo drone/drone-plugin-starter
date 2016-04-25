@@ -1,6 +1,6 @@
 # drone-plugin-starter
 
-Use this project as a base for creating new Drone plugins.
+Starter project for creating Drone plugins.
 
 ### Metadata
 
@@ -8,7 +8,7 @@ Build and Repository metadata are prefixed with `DRONE_` and sent to the plugin 
 
 Example parameters:
 
-```Go
+```
 cli.IntFlag{
     Name:   "build.number",
     Usage:  "build number",
@@ -26,7 +26,7 @@ cli.StringFlag{
 
 Plugin parameters are defined in the yaml file:
 
-```Yaml
+```
 slack:
   channel: dev
   username: drone
@@ -34,14 +34,14 @@ slack:
 
 They are prefixed with `PLUGIN_` and sent to the plugin at runtime:
 
-```sh
+```
 PLUGIN_CHANNEL=dev
 PLUGIN_USERNAME=drone
 ```
 
 These parameters can be retrieved using `cli.Flag` as seen below:
 
-```Go
+```
 cli.StringFlag{
     Usage:  "slack channel",
     EnvVar: "PLUGIN_CHANNEL",
@@ -56,7 +56,7 @@ cli.StringFlag{
 
 Sensitive fields should not be specified in the yaml file. Instead they are passed to your plugin as environment variable. Secrets should be prefixed with
 
-```Go
+```
 cli.StringFlag{
     Usage:  "slack api token",
     EnvVar: "SLACK_TOKEN",
