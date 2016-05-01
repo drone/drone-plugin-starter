@@ -54,7 +54,7 @@ cli.StringFlag{
 
 ### Secrets
 
-Sensitive fields should not be specified in the yaml file. Instead they are passed to your plugin as environment variable. Secrets should be prefixed with
+Sensitive fields should not be specified in the yaml file. Instead they are passed to your plugin as environment variable. Secrets should use a prefix that corresponds to the plugin name. For example, the Slack plugin prefixes secrets with `SLACK_`:
 
 ```
 cli.StringFlag{
@@ -81,4 +81,4 @@ Please create plugins that are easily runnable from the command line. This makes
 
 ### Vendoring
 
-Please vendor dependencies in a manner compatible with `GOVENDOREXPERIMENT`. We recommend using either [govend](https://github.com/govend/govend) with the `--prune` option or using [govendor](https://github.com/kardianos/govendor).
+Please vendor dependencies in a manner compatible with `GOVENDOREXPERIMENT`. All official drone plugins should use [govend](https://github.com/govend/govend) with the `--prune` flag.
