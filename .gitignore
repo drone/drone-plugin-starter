@@ -24,5 +24,7 @@ _testmain.go
 *.prof
 .env
 
+coverage.out
+
 # Name of your binary
 drone-plugin-starter

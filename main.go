@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/codegangsta/cli"
 	_ "github.com/joho/godotenv/autoload"
+	"github.com/urfave/cli"
 )
 
 var version string // build number set at compile-time
