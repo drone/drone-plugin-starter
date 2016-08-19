@@ -13,20 +13,10 @@ pipeline:
 
   latest:
     image: docker
-    storage_driver: overlay
-    repo: plugins/my-plugin
+    repo: plugins/slack
     tags: [ "latest", "1.0", "1" ]
     when:
       branch: master
-      event: push
-
-  develop:
-    image: docker
-    storage_driver: overlay
-    repo: plugins/my-plugin
-    tags: [ "develop" ]
-    when:
-      branch: develop
       event: push
 
 plugin:
