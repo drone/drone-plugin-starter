@@ -81,4 +81,4 @@ Please create plugins that are easily runnable from the command line. This makes
 
 ### Vendoring
 
-Please vendor dependencies in a manner compatible with `GOVENDOREXPERIMENT`. All official drone plugins should use [govend](https://github.com/govend/govend) with the `--prune` flag.
+Please vendor dependencies in a manner compatible with `GOVENDOREXPERIMENT`. All official drone plugins should use [govendor](https://github.com/kardianos/govendor) because it prunes the dependencies pretty well..
