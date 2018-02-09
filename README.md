@@ -1,3 +1,5 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/gjtempleton/drone-pypi)](https://goreportcard.com/report/github.com/gjtempleton/drone-pypi) [![](https://images.microbadger.com/badges/image/gjtempleton/drone-pypi.svg)](https://microbadger.com/images/gjtempleton/drone-pypi "Get your own image badge on microbadger.com") [![Build Status](https://travis-ci.org/gjtempleton/drone-pypi.svg?branch=master)](https://travis-ci.org/gjtempleton/drone-pypi)
+
 # drone-pypi
 
 Basic Drone Plugin for PyPi publishes - Based upon the starter project for creating Drone plugins.
