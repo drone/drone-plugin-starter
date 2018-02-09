@@ -1,30 +1,46 @@
-build:
+workspace:
+  base: /go
+  path: src/github.com/gjtempleton/drone-pypi
+
+pipeline:
   test:
-    image: golang:1.5
-    environment:
-      - CGO_ENABLED=0
-      - GO15VENDOREXPERIMENT=1
+    image: golang:1.8
     commands:
       - go vet
-      - go test
-      - go build -ldflags "-s -w -X main.version=$DRONE_BUILD_NUMBER"
+      - go test -cover -coverprofile=coverage.out
+
+  build:
+    image: golang:1.8
+    commands: sh .drone.sh
     when:
+      branch: master
       event: push
 
-publish:
-  docker:
-    username: $$DOCKER_USER
-    password: $$DOCKER_PASS
-    email: $$DOCKER_EMAIL
-    repo: plugins/my-plugin
-    tag: latest
+  publish_linux_amd64:
+    image: plugins/docker
+    repo: gjtempleton/drone-pypi
+    tags: [ "latest", "1.2", "1" ]
+    secrets: [ docker_username, docker_password ]
+    when:
+      branch: master
+      event: push
 
-plugin:
-  name: My Plugin
-  desc: Description of My Plugin
-  type: publish|deploy|notify|clone|cache
-  image: plugins/my-plugin
-  labels:
-    - label1
-    - label2
-    - label3
+  publish_linux_armhf:
+    image: plugins/docker
+    repo: gjtempleton/drone-pypi
+    tags: [ "linux-arm" ]
+    dockerfile: Dockerfile.armhf
+    secrets: [ docker_username, docker_password ]
+    when:
+      branch: master
+      event: push
+
+  publish_linux_aarch64:
+    image: plugins/docker
+    repo: gjtempleton/drone-pypi
+    tags: [ "linux-arm64" ]
+    dockerfile: Dockerfile.aarch64
+    secrets: [ docker_username, docker_password ]
+    when:
+      branch: master
+      event: push

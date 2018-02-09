@@ -1,6 +1,6 @@
-# drone-plugin-starter
+# drone-pypi
 
-Starter project for creating Drone plugins.
+Basic Drone Plugin for PyPi publishes - Based upon the starter project for creating Drone plugins.
 
 ### Metadata
 

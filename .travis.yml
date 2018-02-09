@@ -1,0 +1,22 @@
+sudo: required
+services:
+- docker
+language: go
+go:
+- 1.9
+script:
+- go vet
+- go test -cover -coverprofile=coverage.out
+- go build -ldflags "-X main.build=${TRAVIS_BUILD_NUMBER}" -a -tags netgo
+after_success:
+- test $TRAVIS_PULL_REQUEST = false && docker login -u $DOCKER_USER -p $DOCKER_PASS
+  && export REPO=gjtempleton/drone-pypi && docker build -t $REPO:build --build-arg
+  GITSHA=$TRAVIS_COMMIT --build-arg BUILDDATE="`date`" . && docker tag $REPO:build
+  $REPO:travis-$TRAVIS_BUILD_NUMBER && if [[ "$TRAVIS_BRANCH" == "master" ]]; then
+  docker tag $REPO:build $REPO:latest; else docker tag $REPO:build $REPO:$TRAVIS_BRANCH;
+  fi && docker push $REPO
+env:
+  global:
+  - COMMIT=${TRAVIS_COMMIT::8}
+  - secure: Uhy+H9lf5iyx+jcnOyV5OZXwQVDyCQUG3HIz+sINTaY7W+xdt5CyI0Oc1QhDJ623a4bGc3G580w5PIyFQb4SGt813pYMqqeyxG4aa/CLwpIsTq67TTyfDv+cLIp5oqaNuJdnSny3ZDgbhLLdfrpzZ7CUIQ93HhlWo9yibvLEiUUCpijTbRWWazn7n7D74iws5PYQZdNTkQl+a1E769f8ZBAzbqRBJ3OvOtHflppx6uyKffUzM7pyF08fl6jni6yYBeLW6SltcWaJUK5E71O1ctM7ZdSPy+99qpACU2xsYL6qNC6IXj/QIYM6oDM0xgh+xUbNPOcuHj6Dl5iEd4Rm6nEL7f7wzn6gC9+bFFJwl0T+RZUhdSPenCBPYI5c7p0eJMeFrRaGbixLlMa+cUwLv57hol+XZZN63PGgc425O4C4NsFTGkqlr2Ru+FVwerPj8pVoewyt3wZSWiSAYE7BlVVttB5YhAex7Z9um4npRgK/L4d2Mq1SpRx321BTnQ61PO/0L7jM1iCVXrJzLNVGu5VMf5/p7IeWA9gdu6CGq/1GpwYbSXytj6wcJD+j7M4ktNVnH+n8IsGamYczp1UqIZYavbRBcgrUHgJEDGM0Vv9qOY61B+4XypQWIw98QNuHpy82CdeMRng5FhQBwW0Qu8Vn8udelbK1nwZXEyfg7/k=
+  - secure: QXXw4Sys4w0yA8yvqEh7mb6WsU6sddn+5P3zqtI+4pBrOjj8WlA2d9OcLA/f308xub4NOX+Kj9Kh+TMOdiXhjbrS6PBFIBTJvr0/T0KqK1nmPgzP1K5n32O8kM77pO52rFDHBzZ1L/efkbU9+JM+Bash+B0M8Q++6TqeDLvPU0LR0JeuxWlEKCOYtW1PhVmCgWADGY1mTL/jkCaD7AvrZPhYQSwZLvI5uiWjZ+TWzocf0R3MlyGWoJhSIDgIb/Cc9mY4AKwFNZfcxqmNunBvN+ATmHPBlzcz/S9ZOPqq9UQ9GTBFnUSqfkbCZ/ApUOdCZ4muC2YanBUvXOk6vA0boM+HyF0PufN40xen5jXvth51t0yBOOuJIT8P0Yx/TSMas61gqoB9KuhOWItZpiYY+1XiniAcLuY7461IA5oRB3N36Si+KxcsUE6wTzmL148nxpek7l/2go16V2rgYcBNCUXirmbTzyzNkJiFj/JC7bJY+uXbnkrcfAuPvrweB5nCDtVS5vjeKPnD47DEbJRGX/toS0e8A/y+6bAbGrdXuyw17CdvT0U4YDle+C7BLvb3u3UFSO8FN8qt6S3Nk69tbWJ07yEr8LW7/4rkL8WTosIEsy3CH+F+uraFnlkQoOqEQszELqWmc5JyXNxdOqttD6ZZt1W8tkzcGPyQRumRt34=
