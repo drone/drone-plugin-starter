@@ -36,6 +36,12 @@ func main() {
 			Value:  "secret",
 			EnvVar: "PLUGIN_PASSWORD,PASSWORD",
 		},
+		cli.StringFlag{
+			Name:   "setupfile",
+			Usage:  "relative location of setup.py file",
+			Value:  "setup.py",
+			EnvVar: "PLUGIN_SETUPFILE",
+		},
 		cli.StringSliceFlag{
 			Name:   "distributions",
 			Usage:  "distribution types to deploy",
@@ -51,6 +57,7 @@ func run(c *cli.Context) {
 		Repository:    c.String("repository"),
 		Username:      c.String("username"),
 		Password:      c.String("password"),
+		SetupFile:     c.String("setupfile"),
 		Distributions: c.StringSlice("distributions"),
 	}
 

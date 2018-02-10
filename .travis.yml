@@ -4,10 +4,16 @@ services:
 language: go
 go:
 - 1.9
+before_install:
+- sudo apt-get -qq update
+- sudo apt-get install -y python3-setuptools
 script:
+- sed -i s/0.1.0/0.1.${TRAVIS_BUILD_NUMBER}/g testdata/setup.py
 - go vet
 - go test -cover -coverprofile=coverage.out
 - go build -ldflags "-X main.build=${TRAVIS_BUILD_NUMBER}" -a -tags netgo
+- rm -rf dist
+- rm -rf drone_pypi_test.egg-info
 after_success:
 - test $TRAVIS_PULL_REQUEST = false && docker login -u $DOCKER_USER -p $DOCKER_PASS
   && export REPO=gjtempleton/drone-pypi && docker build -t $REPO:build --build-arg
@@ -18,5 +24,9 @@ after_success:
 env:
   global:
   - COMMIT=${TRAVIS_COMMIT::8}
+  - PLUGIN_REPOSITORY=https://test.pypi.org/legacy/
+  - PLUGIN_DISTRIBUTIONS=sdist
   - secure: Uhy+H9lf5iyx+jcnOyV5OZXwQVDyCQUG3HIz+sINTaY7W+xdt5CyI0Oc1QhDJ623a4bGc3G580w5PIyFQb4SGt813pYMqqeyxG4aa/CLwpIsTq67TTyfDv+cLIp5oqaNuJdnSny3ZDgbhLLdfrpzZ7CUIQ93HhlWo9yibvLEiUUCpijTbRWWazn7n7D74iws5PYQZdNTkQl+a1E769f8ZBAzbqRBJ3OvOtHflppx6uyKffUzM7pyF08fl6jni6yYBeLW6SltcWaJUK5E71O1ctM7ZdSPy+99qpACU2xsYL6qNC6IXj/QIYM6oDM0xgh+xUbNPOcuHj6Dl5iEd4Rm6nEL7f7wzn6gC9+bFFJwl0T+RZUhdSPenCBPYI5c7p0eJMeFrRaGbixLlMa+cUwLv57hol+XZZN63PGgc425O4C4NsFTGkqlr2Ru+FVwerPj8pVoewyt3wZSWiSAYE7BlVVttB5YhAex7Z9um4npRgK/L4d2Mq1SpRx321BTnQ61PO/0L7jM1iCVXrJzLNVGu5VMf5/p7IeWA9gdu6CGq/1GpwYbSXytj6wcJD+j7M4ktNVnH+n8IsGamYczp1UqIZYavbRBcgrUHgJEDGM0Vv9qOY61B+4XypQWIw98QNuHpy82CdeMRng5FhQBwW0Qu8Vn8udelbK1nwZXEyfg7/k=
   - secure: QXXw4Sys4w0yA8yvqEh7mb6WsU6sddn+5P3zqtI+4pBrOjj8WlA2d9OcLA/f308xub4NOX+Kj9Kh+TMOdiXhjbrS6PBFIBTJvr0/T0KqK1nmPgzP1K5n32O8kM77pO52rFDHBzZ1L/efkbU9+JM+Bash+B0M8Q++6TqeDLvPU0LR0JeuxWlEKCOYtW1PhVmCgWADGY1mTL/jkCaD7AvrZPhYQSwZLvI5uiWjZ+TWzocf0R3MlyGWoJhSIDgIb/Cc9mY4AKwFNZfcxqmNunBvN+ATmHPBlzcz/S9ZOPqq9UQ9GTBFnUSqfkbCZ/ApUOdCZ4muC2YanBUvXOk6vA0boM+HyF0PufN40xen5jXvth51t0yBOOuJIT8P0Yx/TSMas61gqoB9KuhOWItZpiYY+1XiniAcLuY7461IA5oRB3N36Si+KxcsUE6wTzmL148nxpek7l/2go16V2rgYcBNCUXirmbTzyzNkJiFj/JC7bJY+uXbnkrcfAuPvrweB5nCDtVS5vjeKPnD47DEbJRGX/toS0e8A/y+6bAbGrdXuyw17CdvT0U4YDle+C7BLvb3u3UFSO8FN8qt6S3Nk69tbWJ07yEr8LW7/4rkL8WTosIEsy3CH+F+uraFnlkQoOqEQszELqWmc5JyXNxdOqttD6ZZt1W8tkzcGPyQRumRt34=
+  - secure: kD6uKk3U0sKXJLqHaGAY9wFtiE45CsKgPC2ngGU/jpElBTOvWWdxCZU8lhO8rY4/Sf0JEpVp17htBRQPUAsbpuZm4KxeB9BeQ+Zgj8M4DWisJ1wTP3hKriJL05J5s6k+UKAzBKpBZM9y82dp57CBAnuj1mEEVRmd33rSNGyF0kd5WLEbJ2C+LoGbXmTFpsC+IHB4oWGrW4GuFLog7bIbDWGU5SswlQeOSaB66dABYD+G+tQk7RDDpj6srevpNWfyM5rrY+HHaNlylNiiikUgOA3tbaljSCTZBZaDvXPcDQmP6H9nbb11a0c4cI1qCY5YNkNTArKoVwZmCdQf7NKxLiNqc1fB+YZi/Vl17PpN1NWt/2dmqxEKgOeXSUlFC0QmwfTO+8E0OALKwpnJL6TuY9irMN9Cn1rVykIfVQIDPYYYHMgu4D4MBwZp2FSn/PtdQXGnLA3eH+kmGz5Ebng0xNGqATpZkxSo8awAJPySn6OgRdCHkQhQqIMK5hDWM+Nn7J0cJAx2zq3uMLdffTbQi6JJ0leiQ9lSevtCUNO/bUtsn/xE3Cct+MgSi6jIWbQOW+8cIIJTynUuvhQl+tytheZZmJw+SZQkOLB7nXJv7NtLv81a7jFKV1SWVlV4PJzanxA0L0Byx80ZCUzat3o6ABxsgespWVOpfGmrFmUjS2A=
+  - secure: CZne8ZCyPjQ2jAtBCNfQDEIZQSphvS5R8Y5mpIQdRdk3BylmDGOwmtqlNrhgz7opEP7Vpv5nLfAUuTZF7llPkfnlZOX+zPjN6BtYhOetkXGRJ7H9VliIzPYx/SqeK5GjDyZalB/49Rz4h4Jm+HxaAHQ4xAvwLRNf+IjiJYRW0cRARJbsmggX7IBs0vGaQfaRIYdVzkvr9Xlebsv6XeIta6e8md5ohZIDIRlBe0MH2PnMiajXRtRcllja8k35x9z2Vrobt3N1b9HK/+OcxE5qSdbvuizYcTz+sq7MOUXi60gf18JD/ZMbPleZtPgVEyfWSJzp4bwXGACKgx1/3E7xtlH0XaRtGFtyK3ppkefwjZl+G1r22Gt73zxO7e+pctKDZOJVkNtHtMr/6f2y9CKn7S8Pvo2naS5DWu+3L51Dtm4LLNq6mk4fzzps3vkfUdpRf1P9dJUUOP/gpj9Y9avGkKgho4V/+acL97IHdo/UeZI8RyDbMq0K0N2cNmTF+Lpout8kAckJceEXNDqrIOpVbRKio+xoXYMDJCvQN9ZYfpcx5cSja4SmJHq4bOmU8gG4vtR9l9cV7IxR3iVg1NW6i+QfaWYpm0UhjCs7cfzgexNaPKCLvCdQGIdYIbL81cIgA8ix6rX5KvWclEX69lyZ50sVbUHJ9XqfyOI+xtzbdWg=
