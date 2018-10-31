@@ -18,7 +18,8 @@ RUN apk add -U \
  && pip3 install --no-cache-dir --upgrade \
 	pip \
 	setuptools \
-	wheel
+	wheel \
+    twine
 
 ADD drone-pypi /bin/
 ENTRYPOINT ["/bin/drone-pypi"]

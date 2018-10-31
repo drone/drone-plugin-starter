@@ -60,10 +60,11 @@ func (p Plugin) buildCommand() *exec.Cmd {
 	for i := range distributions {
 		args = append(args, distributions[i])
 	}
-	args = append(args, "upload")
-	args = append(args, "-r")
-	args = append(args, "repo")
-	return exec.Command("python3", args...)
+	// args = append(args, "upload")
+	// args = append(args, "-r")
+	// args = append(args, "repo")
+	exec.Command("python3 setup.py", args...)
+	return exec.Command("twine upload dist/*")
 }
 
 // Exec runs the plugin - doing the necessary setup.py modifications
